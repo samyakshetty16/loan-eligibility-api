@@ -7,7 +7,7 @@ import os
 app = FastAPI()
 
 # Load the TensorFlow model
-model = tf.keras.models.load_model("loan-eligibility-api\model\new_loan_approval_nn_model.keras")
+model = tf.keras.models.load_model("model/new_loan_approval_nn_model.keras")
 
 # Define the input schema
 class UserInput(BaseModel):
