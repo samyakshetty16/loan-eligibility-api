@@ -70,7 +70,7 @@ import os
 app = FastAPI()
 
 # Load your trained model
-model = tf.keras.models.load_model("model\new_Loan_Approval_NN_model (1).keras")
+model = tf.keras.models.load_model("model/Neural_Network_model.keras")
 
 # Define the input schema with 12 features
 class UserInput(BaseModel):
