@@ -110,6 +110,11 @@ def calculate_credit_score(input_data):
     # Cap score between 300 and 850
     return max(300, min(850, score))
 
+@app.get("/")
+async def root():
+    return {"message": "Loan Eligibility API is running!"}
+
+
 # Prediction route
 @app.post("/predict/")
 async def predict(user_input: UserInput):
