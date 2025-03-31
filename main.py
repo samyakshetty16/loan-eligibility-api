@@ -447,13 +447,21 @@ async def predict(user_input: UserInput):
         input_df["cb_person_default_on_file"] = input_df["cb_person_default_on_file"].map({"N": 0, "Y": 1}).astype(int)
 
         # One-hot encode categorical features
-        encoded_cats = encoder.transform(input_df[categorical_columns])
+        # encoded_cats = encoder.transform(input_df[categorical_columns])
+        encoded_cats = encoder.transform(input_df[categorical_columns]).toarray()  # Ensure it's a NumPy array
+        logging.info(f"Encoded Categorical Shape: {encoded_cats.shape}")
 
         # Scale numerical features
         scaled_nums = scaler.transform(input_df[numerical_columns])
 
         # Concatenate processed features
-        final_input = np.hstack((scaled_nums, encoded_cats))
+        #final_input = np.hstack((scaled_nums, encoded_cats))
+        final_input = np.hstack((scaled_nums, input_df[["cb_person_default_on_file"]].values, encoded_cats))
+
+        # **Logging input shapes for debugging**
+        logging.info(f"✅ Input Shape: {final_input.shape}")
+        logging.info(f"✅ Expected Model Input Shape: {model.input_shape}")
+
 
         # Predict loan eligibility
         prediction = model.predict(final_input)[0][0]
