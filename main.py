@@ -277,7 +277,7 @@ import joblib
 app = FastAPI()
 
 # Load trained model
-model = tf.keras.models.load_model("model/Credit_Forecasting_Model.keras.keras")
+model = tf.keras.models.load_model("model/Credit_Forecasting_Model.keras")
 
 # Load preprocessing tools
 scaler = joblib.load("scaler.pkl")
