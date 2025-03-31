@@ -157,6 +157,7 @@ async def predict(user_input: UserInput):
 '''
 
 
+'''
 from fastapi import FastAPI
 from pydantic import BaseModel
 import numpy as np
@@ -259,6 +260,99 @@ async def predict(user_input: UserInput):
             "credit_score": credit_score
         }
     
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        return {"error": str(e)}
+'''
+
+
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+import numpy as np
+import pandas as pd
+import tensorflow as tf
+import joblib
+
+app = FastAPI()
+
+# Load trained model
+model = tf.keras.models.load_model("model/Credit_Forecasting_Model.keras.keras")
+
+# Load preprocessing tools
+scaler = joblib.load("scaler.pkl")
+encoder = joblib.load("onehot_encoder.pkl")
+
+# Define categorical and numerical columns
+numerical_columns = [
+    "person_age", "person_income", "person_emp_length", "loan_amnt",
+    "loan_int_rate", "loan_percent_income", "cb_person_cred_hist_length"
+]
+categorical_columns = ["person_home_ownership", "loan_intent", "loan_grade"]
+
+# Define the input schema
+class UserInput(BaseModel):
+    person_age: int
+    person_income: float
+    person_emp_length: int
+    loan_amnt: float
+    loan_int_rate: float
+    person_home_ownership: str
+    loan_intent: str
+    loan_grade: str
+    loan_status: int
+    loan_percent_income: float
+    cb_person_default_on_file: str
+    cb_person_cred_hist_length: int
+
+# Function to calculate credit score
+def calculate_credit_score(input_data):
+    score = 300
+    score += (input_data['person_income'] / 1000) * 1.5
+    score += input_data['person_emp_length'] * 10
+    score -= input_data['loan_int_rate'] * 5
+    if input_data['loan_percent_income'] > 0.4:
+        score -= 50
+    if input_data['cb_person_default_on_file'] == "Y":
+        score -= 100
+    return max(300, min(850, score))
+
+@app.get("/")
+async def root():
+    return {"message": "Loan Eligibility API is running!"}
+
+@app.post("/predict/")
+async def predict(user_input: UserInput):
+    try:
+        input_dict = user_input.dict()
+
+        # Convert to DataFrame
+        input_df = pd.DataFrame([input_dict])
+
+        # Convert binary feature
+        input_df["cb_person_default_on_file"] = input_df["cb_person_default_on_file"].map({"N": 0, "Y": 1})
+
+        # One-hot encode categorical features
+        encoded_cats = encoder.transform(input_df[categorical_columns])
+
+        # Scale numerical features
+        scaled_nums = scaler.transform(input_df[numerical_columns])
+
+        # Concatenate processed features
+        final_input = np.hstack((scaled_nums, encoded_cats))
+
+        # Predict loan eligibility
+        prediction = model.predict(final_input)[0][0]
+        loan_eligibility = "Eligible" if prediction > 0.5 else "Not Eligible"
+
+        # Calculate credit score
+        credit_score = calculate_credit_score(input_dict)
+
+        return {
+            "loan_eligibility": loan_eligibility,
+            "credit_score": credit_score
+        }
+
     except Exception as e:
         print(f"❌ Error: {e}")
         return {"error": str(e)}
