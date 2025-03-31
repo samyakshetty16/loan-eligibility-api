@@ -380,7 +380,7 @@ from keras.saving import register_keras_serializable
 import tensorflow.keras.backend as K
 
 @register_keras_serializable()
-def focal_loss(alpha=0.25, gamma=2.0):
+def focal_loss(alpha=0.25, gamma=1.5):
     def loss(y_true, y_pred):
         y_true = K.cast(y_true, K.floatx())
         bce = K.binary_crossentropy(y_true, y_pred)
@@ -465,7 +465,8 @@ async def predict(user_input: UserInput):
 
         # Predict loan eligibility
         prediction = model.predict(final_input)[0][0]
-        loan_eligibility = "Eligible" if prediction > 0.5 else "Not Eligible"
+        #loan_eligibility = "Eligible" if prediction > 0.5 else "Not Eligible"
+        loan_eligibility = "Eligible" if prediction > 0.46 else "Not Eligible"
 
         # Calculate credit score
         credit_score = calculate_credit_score(input_dict)
