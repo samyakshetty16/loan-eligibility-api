@@ -447,8 +447,8 @@ async def predict(user_input: UserInput):
         input_df["cb_person_default_on_file"] = input_df["cb_person_default_on_file"].map({"N": 0, "Y": 1}).astype(int)
 
         # One-hot encode categorical features
-        # encoded_cats = encoder.transform(input_df[categorical_columns])
-        encoded_cats = encoder.transform(input_df[categorical_columns]).toarray()  # Ensure it's a NumPy array
+        encoded_cats = encoder.transform(input_df[categorical_columns])
+        #encoded_cats = encoder.transform(input_df[categorical_columns]).toarray()  # Ensure it's a NumPy array
         logging.info(f"Encoded Categorical Shape: {encoded_cats.shape}")
 
         # Scale numerical features
