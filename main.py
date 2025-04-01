@@ -390,12 +390,16 @@ def focal_loss(alpha=0.25, gamma=1.5):
     return loss
 
 # Load trained model with focal loss
-model = tf.keras.models.load_model("model/Credit_Forecasting_Model.keras", 
-                                   custom_objects={"loss": focal_loss()})
+#model = tf.keras.models.load_model("model/Credit_Forecasting_Model.keras", custom_objects={"loss": focal_loss()})
+model = tf.keras.models.load_model("model/Trained_UnderSampled_Forecasting_Model.keras", custom_objects={"loss": focal_loss()})
 
 # Load preprocessing tools
-scaler = joblib.load("scaler.pkl")
-encoder = joblib.load("onehot_encoder.pkl")
+scaler = joblib.load("new_scaler.pkl")
+encoder = joblib.load("new_onehot_encoder.pkl")
+
+# Load preprocessing tools
+# scaler = joblib.load("scaler.pkl")
+# encoder = joblib.load("onehot_encoder.pkl")
 
 # Define categorical and numerical columns
 numerical_columns = [
