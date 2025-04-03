@@ -10,8 +10,8 @@ classifier = joblib.load("model/tuned_xgboost_classifier.pkl")
 regressor = joblib.load("model/tuned_xgboost_regressor.pkl")
 
 # Load preprocessing utilities
-scaler = joblib.load("scaler.pkl")
-encoder = joblib.load("ohe_encoder.pkl")
+scaler = joblib.load("loan_data_scaler.pkl")
+encoder = joblib.load("loan_data_onehot_encoder.pkl")
 
 # Define categorical & numerical columns
 categorical_columns = ["loan_purpose"]
