@@ -74,7 +74,7 @@ import numpy as np
 app = FastAPI()
 
 # Load the models
-classifier = joblib.load("model\tuned_xgboost_classifier.pkl")
+classifier = joblib.load("model/tuned_xgboost_classifier.pkl")
 regressor = joblib.load("model/tuned_xgboost_regressor.pkl")
 
 # Load preprocessing tools
