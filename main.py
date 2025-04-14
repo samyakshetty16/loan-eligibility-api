@@ -70,6 +70,8 @@ def predict_credit_eligibility(data: dict):
 from fastapi import FastAPI
 import joblib
 import numpy as np
+from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI()
 
@@ -107,6 +109,16 @@ def preprocess_input(input_data):
     df = pd.concat([df, encoded_df], axis=1)
 
     return df.values  # Return as NumPy array for model input
+
+
+# Add this middleware to handle CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Or specify a list like ["http://localhost:3000"]
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows GET, POST, OPTIONS, etc.
+    allow_headers=["*"],
+)
 
 @app.post("/predict")
 def predict_credit_eligibility(data: dict):
